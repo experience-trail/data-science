@@ -1,0 +1,699 @@
+# GraphQL API
+
+### Create Place:
+mutation createPlace {
+  create_place(place_data: {place_id: "ChIJN1t_tDeuEmsRUsoyG83frY4", google_place_details: "{\"place_id\":\"ChIJN1t_tDeuEmsRUsoyG83frY4\",\"rating\" : 4.6, \"name\" : \"Google\"}", timestamp: "2019-06-02T13:44:31+05:30"}) {
+    place {
+      place_id
+      timestamp
+    }
+    ok
+    message
+  }
+}
+
+**Response:**
+{
+  "data": {
+    "create_place": {
+      "place": {
+        "place_id": "ChIJN1t_tDeuEmsRUsoyG83frY4",
+        "timestamp": "2019-06-02T13:44:31+05:30"
+      },
+      "ok": true
+    }
+  }
+}
+
+### Query Place:
+query queryPlace {
+  place(place_id: "ChIJN1t_tDeuEmsRUsoyG83frY4") {
+    place_id
+    timestamp
+  }
+}
+
+**Response:**
+{
+  "data": {
+    "place": {
+      "place_id": "ChIJN1t_tDeuEmsRUsoyG83frY4",
+      "timestamp": "2019-06-02T13:44:31+05:30"
+    }
+  }
+}
+
+### Query Place Details:
+query queryPlaceDetails {
+  place_details(place_id: "ChIJN1t_tDeuEmsRUsoyG83frY4") {
+    place_id
+    google_place_details
+  }
+}
+
+
+**Response:**
+{
+  "data": {
+    "place_details": {
+      "place_id": "ChIJN1t_tDeuEmsRUsoyG83frY4",
+      "google_place_details": "{\"place_id\": \"ChIJN1t_tDeuEmsRUsoyG83frY4\", \"rating\": 4.5, \"name\": \"Google\"}"
+    }
+  }
+}
+
+### Delete Place:
+mutation deletePlace {
+  delete_place(place_data: {place_id: "ChIJN1t_tDeuEmsRUsoyG83frY4"}) {
+    place {
+      place_id
+      timestamp
+    }
+    ok
+    message
+  }
+}
+
+**Response:**
+{
+  "data": {
+    "delete_place": {
+      "place": {
+        "place_id": "ChIJN1t_tDeuEmsRUsoyG83frY4",
+        "timestamp": "2019-06-02T13:44:31+05:30"
+      },
+      "ok": true
+    }
+  }
+}
+
+### Delete Place by Force Example:
+mutation deletePlace {
+  delete_place(place_data: {place_id: "ChIJN1t_tDeuEmsRUsoyG83frY4"}) {
+    place {
+      place_id
+      timestamp
+    }
+    ok
+    message
+  }
+}
+
+**Failure Response:**
+Note that if there are associated information, normal deletion shall fail.
+So need to use DeleteByForce.
+{
+  "data": {
+    "delete_place": {
+      "place": null,
+      "ok": false,
+      "message": "place has other associated information"
+    }
+  }
+}
+
+**Important Note:** This will delete all the associated information too.
+
+mutation deletePlaceByForce {
+  delete_place_by_force(place_data: {place_id: "ChIJN1t_tDeuEmsRUsoyG83frY4"}) {
+    place {
+      place_id
+      timestamp
+    }
+    ok
+    message
+  }
+}
+
+**Response:**
+{
+  "data": {
+    "delete_place_by_force": {
+      "place": {
+        "place_id": "ChIJN1t_tDeuEmsRUsoyG83frY4",
+        "timestamp": "2019-06-02T13:44:31+05:30"
+      },
+      "ok": true,
+      "message": "Success"
+    }
+  }
+}
+
+### Create Person:
+mutation createPerson {
+  create_person(person_data: {google_id: "115306037822201585694", email: "alice@gmail.com", verified_email: true, name: "Alice T", given_name: "Alice", family_name: "Taylor", picture: "https://lh3.googleusercontent.com/-SSRfy59UzZE/AAAAAAAAAAI/AAAAAAAAAAA/ACHi3reK0_32sczjyiZbxk8Nogs-xSb7_w/photo.jpg", locale: "en"}) {
+    person {
+      google_id
+      email
+      verified_email
+      name
+      given_name
+      family_name
+      picture
+      locale
+    }
+    ok
+    message
+  }
+}
+
+**Response:**
+{
+  "data": {
+    "create_person": {
+      "person": {
+        "google_id": "115306037822201585694",
+        "email": "alice@gmail.com",
+        "verified_email": true,
+        "name": "Alice T",
+        "given_name": "Alice",
+        "family_name": "Taylor",
+        "picture": "https://lh3.googleusercontent.com/-SSRfy59UzZE/AAAAAAAAAAI/AAAAAAAAAAA/ACHi3reK0_32sczjyiZbxk8Nogs-xSb7_w/photo.jpg",
+        "locale": "en"
+      },
+      "ok": true,
+      "message": "Success"
+    }
+  }
+}
+
+### Query Person:
+query queryPerson {
+  person(google_id: "115306037822201585694") {
+    google_id
+    email
+    verified_email
+    name
+    given_name
+    family_name
+    picture
+    locale
+  }
+}
+
+**Response:**
+{
+  "data": {
+    "person": {
+      "google_id": "115306037822201585694",
+      "email": "alice@gmail.com",
+      "verified_email": true,
+      "name": "Alice T",
+      "given_name": "Alice",
+      "family_name": "Taylor",
+      "picture": "https://lh3.googleusercontent.com/-SSRfy59UzZE/AAAAAAAAAAI/AAAAAAAAAAA/ACHi3reK0_32sczjyiZbxk8Nogs-xSb7_w/photo.jpg",
+      "locale": "en"
+    }
+  }
+}
+
+### Delete Person:
+mutation deletePerson {
+  delete_person(person_data: {google_id: "115306037822201585694"}) {
+    person {
+      google_id
+      email
+      verified_email
+      name
+      given_name
+      family_name
+      picture
+      locale
+    }
+    ok
+    message
+  }
+}
+
+**Response:**
+{
+  "data": {
+    "delete_person": {
+      "person": {
+        "google_id": "115306037822201585694",
+        "email": "alice@gmail.com",
+        "verified_email": true,
+        "name": "Alice T",
+        "given_name": "Alice",
+        "family_name": "Taylor",
+        "picture": "https://lh3.googleusercontent.com/-SSRfy59UzZE/AAAAAAAAAAI/AAAAAAAAAAA/ACHi3reK0_32sczjyiZbxk8Nogs-xSb7_w/photo.jpg",
+        "locale": "en"
+      },
+      "ok": true,
+      "message": "Success"
+    }
+  }
+}
+
+### Delete Person By Force:
+**Important Note:** This will delete all the associated information too.
+mutation deletePersonByForce {
+  delete_person_by_force(person_data: {google_id: "115306037822201585694"}) {
+    person {
+      google_id
+      email
+      verified_email
+      name
+      given_name
+      family_name
+      picture
+      locale
+    }
+    ok
+    message
+  }
+}
+
+**Response:**
+{
+  "data": {
+    "delete_person_by_force": {
+      "person": {
+        "google_id": "115306037822201585694",
+        "email": "alice@gmail.com",
+        "verified_email": true,
+        "name": "Alice T",
+        "given_name": "Alice",
+        "family_name": "Taylor",
+        "picture": "https://lh3.googleusercontent.com/-SSRfy59UzZE/AAAAAAAAAAI/AAAAAAAAAAA/ACHi3reK0_32sczjyiZbxk8Nogs-xSb7_w/photo.jpg",
+        "locale": "en"
+      },
+      "ok": true,
+      "message": "Success"
+    }
+  }
+}
+
+### Create Album:
+mutation createAlbum {
+  create_album(album_data: {album_id: "album_id1", private: true}) {
+    album {
+      album_id
+      private
+    }
+    ok
+    message
+  }
+}
+
+**Response:**
+{
+  "data": {
+    "create_album": {
+      "album": {
+        "album_id": "album_id1",
+        "private": true
+      },
+      "ok": true,
+      "message": "Success"
+    }
+  }
+}
+
+### Query Album:
+query queryAlbum {
+  album(album_id: "album_id1") {
+    album_id
+    private
+  }
+}
+
+**Response:**
+{
+  "data": {
+    "album": {
+      "album_id": "album_id1",
+      "private": true
+    }
+  }
+}
+
+### Delete Album:
+mutation deleteAlbum {
+  delete_album(album_data: {album_id: "album_id1"}) {
+    album {
+      album_id
+      private
+    }
+    ok
+    message
+  }
+}
+
+**Response:**
+{
+  "data": {
+    "delete_album": {
+      "album": {
+        "album_id": "album_id1",
+        "private": true
+      },
+      "ok": true,
+      "message": "Success"
+    }
+  }
+}
+
+### Delete Album By Force:
+**Important Note:** This will delete all the associated information too.
+mutation deleteAlbumByForce {
+  delete_album_by_force(album_data: {album_id: "album_id1"}) {
+    album {
+      album_id
+      private
+    }
+    ok
+    message
+  }
+}
+
+**Response:**
+{
+  "data": {
+    "delete_album": {
+      "album": {
+        "album_id": "album_id1",
+        "private": true
+      },
+      "ok": true,
+      "message": "Success"
+    }
+  }
+}
+
+### Create Comment:
+mutation createComment {
+  create_comment(comment_data: {text: "Comment 1", timestamp: "2019-06-02T13:44:31+05:30"}) {
+    comment {
+      text
+      timestamp
+    }
+    key
+    ok
+    message
+  }
+}
+
+**Response:**
+{
+  "data": {
+    "create_comment": {
+      "comment": {
+        "text": "Comment 1",
+        "timestamp": "2019-06-02T13:44:31+05:30"
+      },
+      "key": 3,
+      "ok": true,
+      "message": "Success"
+    }
+  }
+}
+
+### Query Comment:
+query queryComment {
+  comment(key: 3) {
+    key
+    text
+    timestamp
+  }
+}
+
+**Response:**
+{
+  "data": {
+    "comment": {
+      "key": 3,
+      "text": "Comment 1",
+      "timestamp": "2019-06-02T13:44:31+05:30"
+    }
+  }
+}
+
+### Delete Comment:
+mutation deleteComment {
+  delete_comment(comment_data: {key: 3}) {
+    comment {
+      text
+      timestamp
+    }
+    ok
+    message
+  }
+}
+
+**Response:**
+{
+  "data": {
+    "delete_comment": {
+      "comment": {
+        "text": "Comment 1",
+        "timestamp": "2019-06-02T13:44:31+05:30"
+      },
+      "ok": true,
+      "message": "Success"
+    }
+  }
+}
+
+### Link Place to Visitors:
+mutation linkPlaceVisitor {
+  link_place_visitor(visitor_data: {place_id: "ChIJN1t_tDeuEmsRUsoyG83frY4", visitor_google_id: "115306037822201585694"}) {
+    place {
+      place_id
+    }
+    visitor {
+      google_id
+      name
+      email
+    }
+    ok
+    message
+  }
+}
+
+
+**Response:**
+{
+  "data": {
+    "link_place_visitor": {
+      "place": {
+        "place_id": "ChIJN1t_tDeuEmsRUsoyG83frY4"
+      },
+      "visitor": {
+        "google_id": "115306037822201585694"
+      },
+      "ok": true,
+      "message": "Success"
+    }
+  }
+}
+
+### Delink Place to Visitors:
+mutation delinkPlaceVisitor {
+  delink_place_visitor(visitor_data: {place_id: "ChIJN1t_tDeuEmsRUsoyG83frY4", visitor_google_id: "115306037822201585694"}) {
+    place {
+      place_id
+    }
+    visitor {
+      google_id
+    }
+    ok
+    message
+  }
+}
+
+**Response:**
+{
+  "data": {
+    "delink_place_visitor": {
+      "place": {
+        "place_id": "ChIJN1t_tDeuEmsRUsoyG83frY4"
+      },
+      "visitor": {
+        "google_id": "115306037822201585694"
+      },
+      "ok": true,
+      "message": "Success"
+    }
+  }
+}
+
+### Link Place Album:
+mutation linkPlaceAlbum {
+  link_place_album(place_album_data: {place_id: "ChIJN1t_tDeuEmsRUsoyG83frY4", album_id: "album_id1"}) {
+    place {
+      place_id
+    }
+    album {
+      album_id
+    }
+    ok
+    message
+  }
+}
+
+**Response:**
+{
+  "data": {
+    "link_place_album": {
+      "place": {
+        "place_id": "ChIJN1t_tDeuEmsRUsoyG83frY4"
+      },
+      "album": {
+        "album_id": "album_id1"
+      },
+      "ok": true,
+      "message": "Success"
+    }
+  }
+}
+
+### Delink Place Album:
+mutation delinkPlaceAlbum {
+  delink_place_album(place_album_data: {place_id: "ChIJN1t_tDeuEmsRUsoyG83frY4", album_id: "album_id1"}) {
+    place {
+      place_id
+    }
+    album {
+      album_id
+    }
+    ok
+    message
+  }
+}
+
+**Response:**
+{
+  "data": {
+    "delink_place_album": {
+      "place": {
+        "place_id": "ChIJN1t_tDeuEmsRUsoyG83frY4"
+      },
+      "album": {
+        "album_id": "album_id1"
+      },
+      "ok": true,
+      "message": "Success"
+    }
+  }
+}
+
+### Link Friends:
+mutation linkFriends {
+  link_friends(friends_data: {friend1_google_id: "115306037822201585694", friend2_google_id: "115306037822221585694"}) {
+    friend1 {
+      google_id
+    }
+    friend2 {
+      google_id
+    }
+    ok
+    message
+  }
+}
+
+**Response:**
+{
+  "data": {
+    "link_friends": {
+      "friend1": {
+        "google_id": "115306037822201585694"
+      },
+      "friend2": {
+        "google_id": "115306037822221585694"
+      },
+      "ok": true,
+      "message": "Success"
+    }
+  }
+}
+
+### Delink Friends:
+mutation delinkFriends {
+  delink_friends(friends_data: {friend1_google_id: "115306037822201585694", friend2_google_id: "115306037822221585694"}) {
+    friend1 {
+      google_id
+    }
+    friend2 {
+      google_id
+    }
+    ok
+    message
+  }
+}
+
+**Response:**
+{
+  "data": {
+    "delink_friends": {
+      "friend1": {
+        "google_id": "115306037822201585694"
+      },
+      "friend2": {
+        "google_id": "115306037822221585694"
+      },
+      "ok": true,
+      "message": "Success"
+    }
+  }
+}
+
+### Link Following:
+mutation linkFollowing {
+  link_following(following_data: {person_google_id: "115306037822201585694", follower_google_id: "115306037822221333694"}) {
+    person {
+      google_id
+    }
+    follower {
+      google_id
+    }
+    ok
+    message
+  }
+}
+
+**Response:**
+{
+  "data": {
+    "link_following": {
+      "person": {
+        "google_id": "115306037822201585694"
+      },
+      "follower": {
+        "google_id": "115306037822221333694"
+      },
+      "ok": true,
+      "message": "Success"
+    }
+  }
+}
+
+### Delink Following:
+mutation delinkFollowing {
+  delink_following(following_data: {person_google_id: "115306037822201585694", follower_google_id: "115306037822221333694"}) {
+    person {
+      google_id
+    }
+    follower {
+      google_id
+    }
+    ok
+    message
+  }
+}
+
+**Response:**
+{
+  "data": {
+    "delink_following": {
+      "person": {
+        "google_id": "115306037822201585694"
+      },
+      "follower": {
+        "google_id": "115306037822221333694"
+      },
+      "ok": true,
+      "message": "Success"
+    }
+  }
+}
