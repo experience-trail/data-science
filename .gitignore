@@ -105,3 +105,11 @@ venv.bak/
 
 # ignore run.sh
 run.sh
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
+
+# Ignore Elastic Beanstalk Configuration File
+environmentvariables.config
