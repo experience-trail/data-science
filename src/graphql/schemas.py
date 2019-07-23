@@ -492,7 +492,7 @@ class LinkPersonComment(graphene.Mutation):
         comment.add_or_update_poster(person)
         comment.save(graph)
         ok = True
-        message = "Sucess"
+        message = "Success"
 
         return LinkPersonComment(person=person, comment=comment,
                                  ok=ok, message=message)
