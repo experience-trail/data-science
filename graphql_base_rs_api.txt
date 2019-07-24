@@ -1,0 +1,78 @@
+### Create Place:
+mutation createBaseRSPlace {
+  create_basers_place(place_data: {place_id: "ChIJN1t_tDeuEmsRUsoyG83frY4", google_place_details: "{\"place_id\":\"ChIJN1t_tDeuEmsRUsoyG83frY4\",\"rating\" : 4.6, \"name\" : \"Google\"}", timestamp: "2019-06-02T13:44:31+05:30"}) {
+    place_id
+    ok
+    message
+  }
+}
+
+**Response:**
+{
+  "data": {
+    "create_basers_place": {
+      "place_id": "ChIJN1t_tDeuEmsRUsoyG83frY4",
+      "ok": true,
+      "message": "Success"
+    }
+  }
+}
+
+### Query All Place IDs:
+query queryBaseRSAllPlaceIDs {
+  basers_all_place_ids{
+    place_id
+  }
+}
+
+**Response:**
+{
+  "data": {
+    "basers_all_place_ids": [
+      {
+        "place_id": "ChIJN1t_tDeuEmsRUsoyG83frY4"
+      },
+      {
+        "place_id": "ChIJN1t35ttyyyG83frY4"
+      }
+    ]
+  }
+}
+
+### Query Place Details:
+query queryBaseRSPlaceDetails {
+  basers_place_details(place_id: "ChIJN1t_tDeuEmsRUsoyG83frY4") {
+    place_id
+    google_place_details
+  }
+}
+
+**Response:**
+{
+  "data": {
+    "basers_place_details": {
+      "place_id": "ChIJN1t_tDeuEmsRUsoyG83frY4",
+      "google_place_details": "{\"place_id\": \"ChIJN1t_tDeuEmsRUsoyG83frY4\", \"rating\": 4.6, \"name\": \"Google\"}"
+    }
+  }
+}
+
+### Delete Place:
+mutation deleteBaseRSPlace {
+  delete_basers_place(place_data: {place_id: "ChIJN1t_tDeuEmsRUsoyG83frY4"}) {
+    place_id
+    ok
+    message
+  }
+}
+
+**Response:**
+{
+  "data": {
+    "delete_basers_place": {
+      "place_id": "ChIJN1t_tDeuEmsRUsoyG83frY4",
+      "ok": false,
+      "message": "Delete from MongoDB failed"
+    }
+  }
+}
