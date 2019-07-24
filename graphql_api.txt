@@ -1,5 +1,7 @@
 # GraphQL API
 
+# APIs for CRUD operation on objects.
+
 ### Create Place:
 mutation createPlace {
   create_place(place_data: {place_id: "ChIJN1t_tDeuEmsRUsoyG83frY4", google_place_details: "{\"place_id\":\"ChIJN1t_tDeuEmsRUsoyG83frY4\",\"rating\" : 4.6, \"name\" : \"Google\"}", timestamp: "2019-06-02T13:44:31+05:30"}) {
@@ -455,6 +457,8 @@ mutation deleteComment {
   }
 }
 
+# APIs for linking objects with each other.
+
 ### Link Place to Visitors:
 mutation linkPlaceVisitor {
   link_place_visitor(visitor_data: {place_id: "ChIJN1t_tDeuEmsRUsoyG83frY4", visitor_google_id: "115306037822201585694"}) {
@@ -695,5 +699,468 @@ mutation delinkFollowing {
       "ok": true,
       "message": "Success"
     }
+  }
+}
+
+### Link Person Album:
+mutation linkPersonAlbum {
+  link_person_album(person_album_data: {person_google_id: "115306037822201585694", album_id: "album_id1"}) {
+    person {
+      google_id
+    }
+    album {
+      album_id
+    }
+    ok
+    message
+  }
+}
+
+**Response:**
+{
+  "data": {
+    "link_person_album": {
+      "person": {
+        "google_id": "115306037822201585694"
+      },
+      "album": {
+        "album_id": "album_id1"
+      },
+      "ok": true,
+      "message": "Success"
+    }
+  }
+}
+
+
+##Delink Person Album:
+mutation delinkPersonAlbum {
+  delink_person_album(person_album_data: {person_google_id: "115306037822201585694", album_id: "album_id1"}) {
+    person {
+      google_id
+    }
+    album {
+      album_id
+    }
+    ok
+    message
+  }
+}
+
+**Response:**
+{
+  "data": {
+    "delink_person_album": {
+      "person": {
+        "google_id": "115306037822201585694"
+      },
+      "album": {
+        "album_id": "album_id1"
+      },
+      "ok": true,
+      "message": "Success"
+    }
+  }
+}
+
+### Link Person Comment:
+mutation linkPersonComment {
+  link_person_comment(person_comment_data: {person_google_id: "115306037822201585694", comment_key: 6}) {
+    person {
+      google_id
+    }
+    comment {
+      text
+    }
+    ok
+    message
+  }
+}
+
+**Response:**
+{
+  "data": {
+    "link_person_comment": {
+      "person": {
+        "google_id": "115306037822201585694"
+      },
+      "comment": {
+        "text": "Comment 2"
+      },
+      "ok": true,
+      "message": "Sucess"
+    }
+  }
+}
+
+## Delink Person Comment:
+mutation delinkPersonComment {
+  delink_person_comment(person_comment_data: {person_google_id: "115306037822201585694", comment_key: 6}) {
+    person {
+      google_id
+    }
+    comment {
+      text
+    }
+    ok
+    message
+  }
+}
+
+**Response:**
+{
+  "data": {
+    "delink_person_comment": {
+      "person": {
+        "google_id": "115306037822201585694"
+      },
+      "comment": {
+        "text": "Comment 2"
+      },
+      "ok": true,
+      "message": "Success"
+    }
+  }
+}
+
+### Link Album Comment:
+mutation linkAlbumComment {
+  link_album_comment(album_comment_data: {album_id: "album_id1", comment_key: 6}) {
+    album {
+      album_id
+    }
+    comment {
+      text
+    }
+    ok
+    message
+  }
+}
+
+**Response:**
+{
+  "data": {
+    "link_album_comment": {
+      "album": {
+        "album_id": "album_id1"
+      },
+      "comment": {
+        "text": "Comment 2"
+      },
+      "ok": true,
+      "message": "Success"
+    }
+  }
+}
+
+### Delink Album Comment:
+mutation delinkAlbumComment {
+  delink_album_comment(album_comment_data: {album_id: "album_id1", comment_key: 6}) {
+    album {
+      album_id
+    }
+    comment {
+      text
+    }
+    ok
+    message
+  }
+}
+
+**Response:**
+{
+  "data": {
+    "delink_album_comment": {
+      "album": {
+        "album_id": "album_id1"
+      },
+      "comment": {
+        "text": "Comment 2"
+      },
+      "ok": true,
+      "message": "Success"
+    }
+  }
+}
+
+# APIs for querying related objects.
+
+### Query Place Visitors
+query queryPlaceVisitors {
+  place_visitors(place_id: "ChIJN1t_tDeuEmsRUsoyG83frY4") {
+    google_id
+  }
+}
+
+**Response:**
+{
+  "data": {
+    "place_visitors": [
+      {
+        "google_id": "115306037822221585694"
+      },
+      {
+        "google_id": "115306037822201585694"
+      }
+    ]
+  }
+}
+
+### Query Person Visits:
+query queryPersonVisits {
+  person_visits(google_id: "115306037822201585694") {
+    place_id
+  }
+}
+
+**Response:**
+{
+  "data": {
+    "person_visits": [
+      {
+        "place_id": "ChIJN1t_tDeuEmsRUsoyG83frY4"
+      }
+    ]
+  }
+}
+
+### Query Place Albums:
+query queryPlaceAlbums {
+  place_albums(place_id: "ChIJN1t_tDeuEmsRUsoyG83frY4") {
+    album_id
+  }
+}
+
+**Response:**
+{
+  "data": {
+    "place_albums": [
+      {
+        "album_id": "album_id1"
+      }
+    ]
+  }
+}
+
+### Query Place Public Albums:
+query queryPlacePublicAlbums {
+  place_public_albums(place_id: "ChIJN1t_tDeuEmsRUsoyG83frY4") {
+    album_id
+  }
+}
+
+**Response:**
+{
+  "data": {
+    "place_public_albums": []
+  }
+}
+
+### Query Album Place
+query queryAlbumPlace {
+  album_place(album_id: "album_id2") {
+    place_id
+  }
+}
+
+**Response:**
+{
+  "data": {
+    "album_place": [
+      {
+        "place_id": "ChIJN1t_tDeuEmsRUsofff83frY4"
+      }
+    ]
+  }
+}
+
+### Query Friends:
+query queryFriends {
+  friends(google_id: "115306037822201585694") {
+    google_id
+  }
+}
+
+**Response:**
+
+  "data": {
+    "friends": [
+      {
+        "google_id": "115306037823331585694"
+      },
+      {
+        "google_id": "115306037822221585694"
+      }
+    ]
+  }
+}
+
+### Query Followers:
+query queryFollowers {
+  followers(google_id: "115306037822201585694") {
+    google_id
+  }
+}
+
+**Response:**
+{
+  "data": {
+    "followers": [
+      {
+        "google_id": "115302237822221333694"
+      },
+      {
+        "google_id": "115306037822221333694"
+      }
+    ]
+  }
+}
+
+### Query Followings
+query queryFollowings {
+  followings(google_id: "115306037822221333694") {
+    google_id
+  }
+}
+
+**Response:**
+{
+  "data": {
+    "followings": [
+      {
+        "google_id": "115306037822201585694"
+      }
+    ]
+  }
+}
+
+### Query Person Posted Albums:
+query queryPersonPostedAlbums {
+  person_posted_albums(google_id: "115306037822201585694") {
+    album_id
+  }
+}
+
+**Response:**
+{
+  "data": {
+    "person_posted_albums": [
+      {
+        "album_id": "album_id1"
+      }
+    ]
+  }
+}
+
+### Query Person Posted Public Albums
+query queryPersonPostedPublicAlbums {
+  person_posted_public_albums(google_id: "115306037822201585694") {
+    album_id
+  }
+}
+
+**Response:**
+{
+  "data": {
+    "person_posted_public_albums": []
+  }
+}
+
+### Query Album Poster
+query queryAlbumPoster {
+  album_poster(album_id: "album_id1") {
+    google_id
+  }
+}
+
+**Response:**
+{
+  "data": {
+    "album_poster": [
+      {
+        "google_id": "115306037822201585694"
+      }
+    ]
+  }
+}
+
+### Query Person Posted Comments
+query queryPersonPostedComments {
+  person_posted_comments(google_id: "115306037822201585694") {
+    key
+  }
+}
+
+**Response:**
+{
+  "data": {
+    "person_posted_comments": [
+      {
+        "key": 14
+      },
+      {
+        "key": 13
+      }
+    ]
+  }
+}
+
+### Query Comment Poster
+query queryCommentPoster {
+  comment_poster(key: 13) {
+    google_id
+  }
+}
+
+**Response:**
+{
+  "data": {
+    "comment_poster": [
+      {
+        "google_id": "115306037822201585694"
+      }
+    ]
+  }
+}
+
+### Query Album Comments
+query queryAlbumComments {
+  album_comments(album_id: "album_id1") {
+    key
+  }
+}
+
+**Response:**
+{
+  "data": {
+    "album_comments": [
+      {
+        "key": 16
+      },
+      {
+        "key": 14
+      },
+      {
+        "key": 13
+      }
+    ]
+  }
+}
+
+### Query Comment Album:
+query queryCommentAlbum {
+  comment_album(key: 16) {
+    album_id
+  }
+}
+
+**Response:**
+{
+  "data": {
+    "comment_album": [
+      {
+        "album_id": "album_id1"
+      }
+    ]
   }
 }
