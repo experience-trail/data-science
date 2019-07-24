@@ -14,6 +14,8 @@ from .schemasdef import PlaceSchema, PlaceInput, PlaceDetailsSchema,\
     CommentQuerySchema, CommentInput, CommentDeleteInput,\
     PersonCommentInput, AlbumCommentInput
 from .mongo import insert_to_mongodb, find_in_mongodb, delete_from_mongodb
+from .mongo import insert_to_basers_mongodb, find_in_basers_mongodb,\
+    delete_from_basers_mongodb
 
 # Environment variables
 url = os.environ['NEO4J_URL']
@@ -51,6 +53,33 @@ class CreatePlace(graphene.Mutation):
         message = "Success"
 
         return CreatePlace(place=place, ok=ok, message=message)
+
+
+class CreateBaseRSPlace(graphene.Mutation):
+
+    class Arguments:
+        place_data = PlaceInput(required=True)
+
+    place_id = graphene.String()
+    ok = graphene.Boolean()
+    message = graphene.String()
+
+    @staticmethod
+    def mutate(self, info, place_data=None):
+        # Insert into MongoDB
+        if not insert_to_basers_mongodb(_id=place_data.place_id,
+                                        timestamp=place_data.timestamp,
+                                        data=place_data.google_place_details):
+            ok = False
+            message = "Insertion to MongoDB failed"
+            return CreatePlace(place_id=place_data.place_id,
+                               ok=ok, message=message)
+
+        ok = True
+        message = "Success"
+
+        return CreateBaseRSPlace(place_id=place_data.place_id,
+                                 ok=ok, message=message)
 
 
 class CreatePerson(graphene.Mutation):
@@ -639,6 +668,31 @@ class DeletePlace(graphene.Mutation):
                            ok=ok, message=message)
 
 
+class DeleteBaseRSPlace(graphene.Mutation):
+
+    class Arguments:
+        place_data = PlaceInput(required=True)
+
+    place_id = graphene.String()
+    ok = graphene.Boolean()
+    message = graphene.String()
+
+    @staticmethod
+    def mutate(self, info, place_data=None):
+        # Delete it from MongoDB
+        if not delete_from_basers_mongodb(_id=place_data.place_id):
+            ok = False
+            message = "Delete from MongoDB failed"
+            return DeletePlace(place_id=place_data.place_id,
+                               ok=ok, message=message)
+
+        ok = True
+        message = "Success"
+
+        return DeletePlace(place_id=place_data.place_id,
+                           ok=ok, message=message)
+
+
 class DeletePlaceByForce(graphene.Mutation):
 
     class Arguments:
@@ -841,6 +895,10 @@ class Query(graphene.ObjectType):
     album = graphene.Field(AlbumSchema, album_id=graphene.String())
     comment = graphene.Field(CommentQuerySchema, key=graphene.Int())
 
+    # Base Recommendation System Places queries
+    basers_place_details = graphene.Field(PlaceDetailsSchema,
+                                          place_id=graphene.String())
+
     # Query to fetch all visitors to a particular place
     place_visitors = graphene.List(PersonSchema, place_id=graphene.String())
 
@@ -932,6 +990,16 @@ class Query(graphene.ObjectType):
             return None
 
         return CommentQuerySchema(**comment.as_dict())
+
+    def resolve_basers_place_details(self, info, place_id):
+        doc = find_in_basers_mongodb(_id=place_id)
+        if doc is None:
+            return None
+
+        place_details = doc["google_place_details"]
+
+        return PlaceDetailsSchema(place_id=place_id,
+                                  google_place_details=place_details)
 
     def resolve_place_visitors(self, info, place_id):
         place = Place.match(graph, place_id).first()
