@@ -19,6 +19,10 @@ class PlaceSchema(graphene.ObjectType):
     timestamp = CustomGrapheneDateTime()
 
 
+class PlaceIDSchema(graphene.ObjectType):
+    place_id = graphene.String()
+
+
 class PlaceDetailsSchema(graphene.ObjectType):
     place_id = graphene.String()
     google_place_details = graphene.types.json.JSONString()

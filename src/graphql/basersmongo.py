@@ -43,6 +43,15 @@ def find_in_basers_mongodb(_id):
     return col.find_one(query)
 
 
+def findall_in_basers_mongodb():
+    all_records = col.find({})
+    all_ids = []
+    for record in all_records:
+        all_ids.append(record["_id"])
+
+    return all_ids
+
+
 def delete_from_basers_mongodb(_id):
     query = {"_id": _id}
     result = col.delete_one(query)
