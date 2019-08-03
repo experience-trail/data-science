@@ -77,8 +77,9 @@ def add_to_basers_db(place_id, place_details):
 
     # Below clean up is needed to ensure the json data is in correct format
     # to be stored using GraphQL API.
-    temp_place_details_str = place_details_str.replace('\\\"', "'")
-    updated_place_details_str = temp_place_details_str.replace('"', '\\"')
+    temp_str = place_details_str.replace('\\\"', "'")
+    temp_str = temp_str.replace('"', '\\"')
+    temp_str = temp_str.replace('\\n', '\\\\n')
 
     # GraphQL API for adding Place inforamation to be used for Base
     # Recommendation System.
@@ -96,7 +97,7 @@ def add_to_basers_db(place_id, place_details):
     }
     ''')
 
-    place_details = updated_place_details_str
+    place_details = temp_str
     timestamp = get_utc_time()
 
     # Creating dynamic parameter list
@@ -104,8 +105,6 @@ def add_to_basers_db(place_id, place_details):
     place_details_str = f'    "place_details": "{place_details}",\n'
     timestamp_str = f'    "timestamp": "{timestamp}"\n'
     params = "{\n"+place_id_str+place_details_str+timestamp_str+"}"
-
-    print(params)
 
     return gql_client.execute(createBaseRSPlace, variable_values=params)
 
@@ -214,6 +213,8 @@ if __name__ == "__main__":
         place_details = place_details_response['result']
 
         try:
-            add_to_basers_db(place_id, place_details)
+            result = add_to_basers_db(place_id, place_details)
+            if result['create_basers_place']['ok']:
+                print(f"\n{name} is successfully added")
         except Exception:
             print("Failed to add place details into local DB")
