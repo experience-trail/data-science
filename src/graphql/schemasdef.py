@@ -104,6 +104,12 @@ class FriendsInput(graphene.InputObjectType):
     friend2_google_id = graphene.String(required=True)
 
 
+# Friend Request
+class FriendRequestInput(graphene.InputObjectType):
+    person_google_id = graphene.String(required=True)
+    friend_google_id = graphene.String(required=True)
+
+
 # Following relationship
 class FollowingInput(graphene.InputObjectType):
     person_google_id = graphene.String(required=True)

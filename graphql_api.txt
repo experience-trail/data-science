@@ -1164,3 +1164,158 @@ query queryCommentAlbum {
     ]
   }
 }
+
+### Query Person by Name:
+### This API is case-insensitive and returns max 20 matches.
+query queryPersonByName {
+  person_by_name(person_name: "alice") {
+    google_id
+    email
+    verified_email
+    name
+    given_name
+    family_name
+    picture
+    locale
+  }
+}
+
+**Response:**
+{
+  "data": {
+    "person_by_name": [
+      {
+        "google_id": "115306037822201585694",
+        "email": "alice@gmail.com",
+        "verified_email": true,
+        "name": "Alice T",
+        "given_name": "Alice",
+        "family_name": "Taylor",
+        "picture": "https://lh3.googleusercontent.com/-SSRfy59UzZE/AAAAAAAAAAI/AAAAAAAAAAA/ACHi3reK0_32sczjyiZbxk8Nogs-xSb7_w/photo.jpg",
+        "locale": "en"
+      },
+      {
+        "google_id": "115306037822201585222",
+        "email": "alice2@gmail.com",
+        "verified_email": true,
+        "name": "Alice T2",
+        "given_name": "Alice",
+        "family_name": "Taylor",
+        "picture": "https://lh3.googleusercontent.com/-SSRfy59UzZE/AAAAAAAAAAI/AAAAAAAAAAA/ACHi3reK0_32sczjyiZbxk8Nogs-xSb7_w/photo.jpg",
+        "locale": "en"
+      },
+      {
+        "google_id": "115306037822201585111",
+        "email": "alice1@gmail.com",
+        "verified_email": true,
+        "name": "Alice T1",
+        "given_name": "Alice",
+        "family_name": "Taylor",
+        "picture": "https://lh3.googleusercontent.com/-SSRfy59UzZE/AAAAAAAAAAI/AAAAAAAAAAA/ACHi3reK0_32sczjyiZbxk8Nogs-xSb7_w/photo.jpg",
+        "locale": "en"
+      }
+    ]
+  }
+}
+
+### Link Friend Request:
+mutation linkFriendRequest {
+  link_friend_requests(friend_request_data: {person_google_id: "115306037822201585694", friend_google_id: "115306037822201585111"}) {
+    person {
+      google_id
+    }
+    friend {
+      google_id
+    }
+    ok
+    message
+  }
+}
+
+**Response:**
+{
+  "data": {
+    "link_friend_requests": {
+      "person": {
+        "google_id": "115306037822201585694"
+      },
+      "friend": {
+        "google_id": "115306037822201585111"
+      },
+      "ok": true,
+      "message": "Success"
+    }
+  }
+}
+
+### Delink Friend Request:
+mutation delinkFriendRequest {
+  delink_friend_requests(friend_request_data: {person_google_id: "115306037822201585694", friend_google_id: "115306037822201585111"}) {
+    person {
+      google_id
+    }
+    friend {
+      google_id
+    }
+    ok
+    message
+  }
+}
+
+**Response:**
+{
+  "data": {
+    "delink_friend_requests": {
+      "person": {
+        "google_id": "115306037822201585694"
+      },
+      "friend": {
+        "google_id": "115306037822201585111"
+      },
+      "ok": true,
+      "message": "Success"
+    }
+  }
+}
+
+### Query Friend Request Received:
+query queryFriendRequestReceived {
+  friend_requests_recv(google_id: "115306037822201585694") {
+    google_id
+  }
+}
+
+**Response:**
+{
+  "data": {
+    "friend_requests_recv": [
+      {
+        "google_id": "115306037822201585222"
+      },
+      {
+        "google_id": "115306037822201585111"
+      }
+    ]
+  }
+}
+
+### Query Friend Request Sent:
+query queryFriendRequestSent {
+  friend_requests_sent(google_id: "115306037822201585222") {
+    google_id
+  }
+}
+
+**Response:**
+{
+  "data": {
+    "friend_requests_sent": [
+      {
+        "google_id": "115306037822201585111"
+      },
+      {
+        "google_id": "115306037822201585694"
+      }
+    ]
+  }
+}
