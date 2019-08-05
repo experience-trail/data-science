@@ -10,8 +10,8 @@ from .persongo import Person
 from .schemasdef import PlaceSchema, PlaceInput, PlaceDetailsSchema,\
     PlaceIDSchema, PersonSchema, PersonInput, VisitorInput,\
     AlbumSchema, AlbumInput, PlaceAlbumInput,\
-    FriendsInput, FollowingInput, PersonAlbumInput, CommentSchema,\
-    CommentQuerySchema, CommentInput, CommentDeleteInput,\
+    FriendsInput, FriendRequestInput, FollowingInput, PersonAlbumInput,\
+    CommentSchema, CommentQuerySchema, CommentInput, CommentDeleteInput,\
     PersonCommentInput, AlbumCommentInput
 
 # Mongo DB related functions
@@ -354,6 +354,78 @@ class DelinkFriends(graphene.Mutation):
 
         return DelinkFriends(friend1=friend1, friend2=friend2,
                              ok=ok, message=message)
+
+
+# Link friend requests
+class LinkFriendRequest(graphene.Mutation):
+
+    class Arguments:
+        friend_request_data = FriendRequestInput(required=True)
+
+    person = graphene.Field(PersonSchema)
+    friend = graphene.Field(PersonSchema)
+    ok = graphene.Boolean()
+    message = graphene.String()
+
+    @staticmethod
+    def mutate(self, info, friend_request_data=None):
+        person = Person.match(graph,
+                              friend_request_data.person_google_id).first()
+        friend = Person.match(graph,
+                              friend_request_data.friend_google_id).first()
+
+        if not person or not friend:
+            ok = False
+            message = "Either person or friend not available"
+            return LinkFriendRequest(person=None, friend=None,
+                                     ok=ok, message=message)
+
+        person.add_or_update_friend_request_recv(friend)
+        person.save(graph)
+
+        friend.add_or_update_friend_request_sent(person)
+        friend.save(graph)
+        ok = True
+        message = "Success"
+
+        return LinkFriendRequest(person=person, friend=friend,
+                                 ok=ok, message=message)
+
+
+# Link friend requests
+class DelinkFriendRequest(graphene.Mutation):
+
+    class Arguments:
+        friend_request_data = FriendRequestInput(required=True)
+
+    person = graphene.Field(PersonSchema)
+    friend = graphene.Field(PersonSchema)
+    ok = graphene.Boolean()
+    message = graphene.String()
+
+    @staticmethod
+    def mutate(self, info, friend_request_data=None):
+        person = Person.match(graph,
+                              friend_request_data.person_google_id).first()
+        friend = Person.match(graph,
+                              friend_request_data.friend_google_id).first()
+
+        if not person or not friend:
+            ok = False
+            message = "Either person or friend not available"
+            return DelinkFriendRequest(person=None, friend=None,
+                                       ok=ok, message=message)
+
+        person.remove_friend_request_recv(friend)
+        person.save(graph)
+
+        friend.remove_friend_request_sent(person)
+        friend.save(graph)
+        ok = True
+        message = "Success"
+
+        return DelinkFriendRequest(person=person, friend=friend,
+                                   ok=ok, message=message)
 
 
 # Establish following
@@ -921,6 +993,14 @@ class Query(graphene.ObjectType):
     # Query to fetch all friends of a person
     friends = graphene.List(PersonSchema, google_id=graphene.String())
 
+    # Query to fetch all pending friend request received by a person
+    friend_requests_recv = graphene.List(PersonSchema,
+                                         google_id=graphene.String())
+
+    # Query to fetch all pending friend request sent by a person
+    friend_requests_sent = graphene.List(PersonSchema,
+                                         google_id=graphene.String())
+
     # Query to fetch all followers of a person
     followers = graphene.List(PersonSchema, google_id=graphene.String())
 
@@ -952,6 +1032,10 @@ class Query(graphene.ObjectType):
     # No need for specific public album information. Here assumption is that
     # if we have access to comments on album, album scope is already available.
     comment_album = graphene.List(AlbumSchema, key=graphene.Int())
+
+    # Customized APIs.
+    person_by_name = graphene.List(PersonSchema,
+                                   person_name=graphene.String())
 
     def resolve_place(self, info, place_id):
         place = Place.match(graph, place_id).first()
@@ -1064,6 +1148,24 @@ class Query(graphene.ObjectType):
         return [PersonSchema(**friend.as_dict())
                 for friend in person.friends]
 
+    def resolve_friend_requests_recv(self, info, google_id):
+        person = Person.match(graph, google_id).first()
+
+        if not person:
+            return person
+
+        return [PersonSchema(**friend.as_dict())
+                for friend in person.friend_requests_recv]
+
+    def resolve_friend_requests_sent(self, info, google_id):
+        person = Person.match(graph, google_id).first()
+
+        if not person:
+            return person
+
+        return [PersonSchema(**friend.as_dict())
+                for friend in person.friend_requests_sent]
+
     def resolve_followers(self, info, google_id):
         person = Person.match(graph, google_id).first()
 
@@ -1145,6 +1247,19 @@ class Query(graphene.ObjectType):
         return [AlbumSchema(**album.as_dict())
                 for album in comment.album]
 
+    def resolve_person_by_name(self, info, person_name):
+        match_str = '(?i)'+person_name+'.*'
+
+        match_list = \
+            Person.match(graph)\
+                .where(f"_.name =~ '{match_str}'").limit(20)  # noqa: E999
+
+        if len(match_list) == 0:
+            return None
+
+        return [PersonSchema(**match.as_dict())
+                for match in match_list]
+
 
 class Mutations(graphene.ObjectType):
     create_place = CreatePlace.Field()
@@ -1176,6 +1291,9 @@ class Mutations(graphene.ObjectType):
 
     link_friends = LinkFriends.Field()
     delink_friends = DelinkFriends.Field()
+
+    link_friend_requests = LinkFriendRequest.Field()
+    delink_friend_requests = DelinkFriendRequest.Field()
 
     link_following = LinkFollowing.Field()
     delink_following = DelinkFollowing.Field()

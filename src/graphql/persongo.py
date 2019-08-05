@@ -17,6 +17,12 @@ class Person(GraphObject):
     # Set of friends. This is bi-directional relationship
     friends = Related("Person")
 
+    # Set of friend requests sent
+    friend_requests_sent = RelatedTo("Person")
+
+    # Set of friend requests received
+    friend_requests_recv = RelatedFrom("Person")
+
     # Set of Person whom the Person follows
     followings = RelatedTo("Person", "FOLLOWINGS")
 
@@ -69,6 +75,34 @@ class Person(GraphObject):
 
     def remove_friend(self, friend):
         self.friends.remove(friend)
+
+    def add_or_update_friend_requests_sent(self, friends):
+        for friend in friends:
+            self.friend_requests_sent.update(friend)
+
+    def add_or_update_friend_request_sent(self, friend):
+        self.friend_requests_sent.update(friend)
+
+    def remove_friend_requests_sent(self, friends):
+        for friend in friends:
+            self.friend_requests_sent.remove(friend)
+
+    def remove_friend_request_sent(self, friend):
+        self.friend_requests_sent.remove(friend)
+
+    def add_or_update_friend_requests_recv(self, friends):
+        for friend in friends:
+            self.friend_requests_recv.update(friend)
+
+    def add_or_update_friend_request_recv(self, friend):
+        self.friend_requests_recv.update(friend)
+
+    def remove_friend_requests_recv(self, friends):
+        for friend in friends:
+            self.friend_requests_recv.remove(friend)
+
+    def remove_friend_request_recv(self, friend):
+        self.friend_requests_recv.remove(friend)
 
     def add_or_update_followings(self, followings):
         for following in followings:
