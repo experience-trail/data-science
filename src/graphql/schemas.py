@@ -1037,6 +1037,15 @@ class Query(graphene.ObjectType):
     person_by_name = graphene.List(PersonSchema,
                                    person_name=graphene.String())
 
+    friends_recommendation = graphene.List(PersonSchema,
+                                           person_google_id=graphene.String())
+
+    followings_recommendation =\
+        graphene.List(PersonSchema, person_google_id=graphene.String())
+
+    places_recommendation =\
+        graphene.List(PlaceSchema, person_google_id=graphene.String())
+
     def resolve_place(self, info, place_id):
         place = Place.match(graph, place_id).first()
 
@@ -1258,6 +1267,80 @@ class Query(graphene.ObjectType):
             return None
 
         return [PersonSchema(**match.as_dict())
+                for match in match_list]
+
+    def resolve_friends_recommendation(self, info, person_google_id):
+        match_str = "{google_id: '"+person_google_id+"'}"
+
+        match_cypher = """
+        MATCH (n:Person{match_str})
+        MATCH (n)-[:FRIENDS*2]-(m)
+        WHERE NOT (n)-[:FRIENDS]-(m)
+        RETURN DISTINCT m.google_id AS google_id,
+        m.email AS email,
+        m.verified_email AS verified_email,
+        m.name AS name,
+        m.given_name AS given_name,
+        m.family_name AS family_name,
+        m.picture AS picture,
+        m.locale AS locale
+        LIMIT 20
+        """.format(match_str=match_str)
+
+        match_list = graph.run(match_cypher).data()
+
+        if len(match_list) == 0:
+            return None
+
+        return [PersonSchema(**match)
+                for match in match_list]
+
+    def resolve_followings_recommendation(self, info, person_google_id):
+        match_str = "{google_id: '"+person_google_id+"'}"
+
+        match_cypher = """
+        MATCH (n:Person{match_str})
+        MATCH (n)-[:FRIENDS*2]-(m)
+        MATCH (m)-[:FOLLOWINGS]-(o)
+        WHERE NOT ((n)-[:FRIENDS]-(o) OR (n)-[:FOLLOWINGS]-(o))
+        RETURN DISTINCT o.google_id AS google_id,
+        o.email AS email,
+        o.verified_email AS verified_email,
+        o.name AS name,
+        o.given_name AS given_name,
+        o.family_name AS family_name,
+        o.picture AS picture,
+        o.locale AS locale
+        LIMIT 20
+        """.format(match_str=match_str)
+
+        match_list = graph.run(match_cypher).data()
+
+        if len(match_list) == 0:
+            return None
+
+        return [PersonSchema(**match)
+                for match in match_list]
+
+    def resolve_places_recommendation(self, info, person_google_id):
+        match_str = "{google_id: '"+person_google_id+"'}"
+
+        match_cypher = """
+        MATCH (n:Person{match_str})
+        MATCH  (n)-[:FRIENDS*2]-(m)
+        MATCH (m)-[:VISITED]-(o)
+        WHERE NOT (n)-[:VISITED]-(o)
+        RETURN DISTINCT o.place_id AS place_id,
+        o.timestamp AS timestamp
+        LIMIT 20
+        """.format(match_str=match_str)
+
+        match_list = graph.run(match_cypher).data()
+
+        if len(match_list) == 0:
+            return None
+
+        return [PlaceSchema(**match)
                 for match in match_list]
 
 

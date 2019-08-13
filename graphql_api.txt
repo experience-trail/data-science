@@ -1319,3 +1319,94 @@ query queryFriendRequestSent {
     ]
   }
 }
+
+### Friends Recommendations:
+### This API returns recommendation to connect with Friends of Friends.
+query queryFriendRecommendations {
+  friends_recommendation(person_google_id: "115306037822201585694") {
+    google_id
+    email
+    verified_email
+    name
+    given_name
+    family_name
+    picture
+    locale
+  }
+}
+
+**Response:**
+{
+  "data": {
+    "friends_recommendation": [
+      {
+        "google_id": "115306037822201585444",
+        "email": "bob1@gmail.com",
+        "verified_email": true,
+        "name": "Bob T",
+        "given_name": "Bob",
+        "family_name": "Taylor",
+        "picture": "https://lh3.googleusercontent.com/-SSRfy59UzZE/AAAAAAAAAAI/AAAAAAAAAAA/ACHi3reK0_32sczjyiZbxk8Nogs-xSb7_w/photo.jpg",
+        "locale": "en"
+      }
+    ]
+  }
+}
+
+### Followings Recommendations:
+### This API returns recommndation of followings based on Friends.
+query queryFollowingRecommendations {
+  followings_recommendation(person_google_id: "115306037822201585694") {
+    google_id
+    email
+    verified_email
+    name
+    given_name
+    family_name
+    picture
+    locale
+  }
+}
+
+**Response:**
+{
+  "data": {
+    "followings_recommendation": [
+      {
+        "google_id": "115306037822201585333",
+        "email": "bob@gmail.com",
+        "verified_email": true,
+        "name": "Bob R",
+        "given_name": "Bob",
+        "family_name": "Rock",
+        "picture": "https://lh3.googleusercontent.com/-SSRfy59UzZE/AAAAAAAAAAI/AAAAAAAAAAA/ACHi3reK0_32sczjyiZbxk8Nogs-xSb7_w/photo.jpg",
+        "locale": "en"
+      }
+    ]
+  }
+}
+
+### Places Recommendations:
+### This API returns recommendation of places visited by Friends but not visited by person
+query queryPlaceRecommendations {
+  places_recommendation(person_google_id: "115306037822201585222") {
+    place_id
+    timestamp
+  }
+}
+
+**Response:**
+{
+  "data": {
+    "places_recommendation": [
+      {
+        "place_id": "ChIJN1t_tDeuEmsRUsoyG22222",
+        "timestamp": "2019-06-02T13:44:31+05:30"
+      },
+      {
+        "place_id": "ChIJN1t_tDeuEmsRUsoyG11111",
+        "timestamp": "2019-06-02T13:44:31+05:30"
+      }
+    ]
+  }
+}
